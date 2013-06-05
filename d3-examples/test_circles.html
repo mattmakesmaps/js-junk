@@ -22,17 +22,63 @@
 
 	<body>
 		<script type="text/javascript">
-			d3.select("body")
-			    .append("p")
-			    .text("Some SVG Circles About Coffee Brew Methods");
-			
 			// To be replaced with values from Scott Rao figure 4?
-			var dataset = [10, 4, 9, 2, 4, 5, 8, 3];
+			var dataset = [
+			{"value": 4, "label": "Turkish", "color": "#000000"},
+			{"value": 6, "label": "French Press", "color": "#D8BFD8"},
+			{"value": 6, "label": "Something", "color": "#FF69B4"},
+			{"value": 10, "label": "Metal-Filter Drip", "color": "#F0E68C"},
+			{"value": 5, "label": "Cloth-Filter Drip", "color": "#87CEFA"},
+			{"value": 5, "label": "Paper-Filer Drip", "color": "#FFA500"},
+			{"value": 8, "label": "Siphon", "color": "#90EE90"},
+			{"value": 5, "label": "Chemex", "color": "#F0E68C"}
+			];
 			
+			var w = 575;
+			var h = 300;
 			var svg = d3.select("body")
 			                .append("svg")
-			                .attr("width", 500)
-			                .attr("height", 500);
+			                .attr("width", w)
+			                .attr("height", h);
+			
+			var circles = svg.selectAll("circle")
+    			.data(dataset)
+    			.enter()
+    			.append("circle")
+    		
+    		circles.attr("cx", function(d , i){
+    		    return (i * 50) + 100;
+    		})
+        		.attr("cy", h/2)
+        		.attr("r", function(d) {
+        		    return d["value"] * 5;
+        		})
+        		.attr("fill", function(d){
+        		    return d["color"];
+        		})
+        		.attr("stroke", function(d){
+        		    return d["color"];
+        		})
+        		.attr("stroke-width", 3)
+        		.attr("fill-opacity", 0.75);
+    		
+    		d3.select(circles[0][0])
+    		    .attr("stroke-dasharray", "4,2")
+        		.attr("fill-opacity", 0.0);
+        	
+        	
+            var centerline = svg.append("line")
+                .attr("x1", 50)
+        	    .attr("x2", w-50)
+        	    .attr("y1", h/2)
+        	    .attr("y2", h/2)
+        	    .style("stroke", "#000000");
+        		
 		</script>
+		<p>Some SVG Circles About Coffee Brew Methods.</p>
+		<p>Larger circles indicate a greater range in filter porosity.</p>
+		<a href="http://i.imgur.com/07elh8S.jpg">Based On</a>
+		<a href="http://www.reddit.com/r/Coffee/comments/1ekzis/the_spectrum_of_flavor_clarity_vs_body_a_really/">Via</a>
+		<a href="http://www.amazon.com/Everything-But-Espresso-Professional-Techniques/dp/B003LM063A">Ripped Off From</a>
 	</body>
 </html>
