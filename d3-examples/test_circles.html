@@ -67,11 +67,44 @@
         		.attr("fill-opacity", 0.0);
         	
         	
+        	// How do I make a re-usable marker definition
+        	// that can be subclassed and modified?
+        	var marker_end = svg.append("marker")
+                .attr("id", "arrow_end")
+                .attr("refX", 12)
+                .attr("refY", 6)
+                .attr("markerWidth", 25)
+                .attr("markerHeight", 35)
+                .attr("orient", "auto")
+                .append("path")
+                     .attr("d", "M 0,0 V 12 L16,6 Z");
+            
+            var marker_start = marker_end.attr("id", "arrow_start");
+            
+            svg.append("defs").append("marker_end")
+            
+            svg.append("defs").append("marker_start")
+        	
+        	/**
+        	svg.append("defs").append("marker")
+                .attr("id", "my_arrowhead")
+                .attr("refX", 12) 
+                .attr("refY", 6)
+                .attr("markerWidth", 25)
+                .attr("markerHeight", 35)
+                .attr("orient", "auto")
+                .append("path")
+                     .attr("d", "M 0,0 V 12 L16,6 Z");
+             **/
+        	
+        	
             var centerline = svg.append("line")
                 .attr("x1", 50)
         	    .attr("x2", w-50)
         	    .attr("y1", h/2)
         	    .attr("y2", h/2)
+        	    .attr("marker-end", "url(#arrow_end)")
+        	    .attr("marker-start", "url(#arrow_start)")
         	    .style("stroke", "#000000");
         		
 		</script>
