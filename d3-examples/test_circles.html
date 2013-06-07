@@ -9,7 +9,7 @@
 			var dataset = [
 			{"value": 4, "label": "Turkish", "color": "#000000"},
 			{"value": 6, "label": "French Press", "color": "#D8BFD8"},
-			{"value": 6, "label": "Something", "color": "#FF69B4"},
+			{"value": 6, "label": "Eva Solo", "color": "#FF69B4"},
 			{"value": 10, "label": "Metal-Filter Drip", "color": "#F0E68C"},
 			{"value": 5, "label": "Cloth-Filter Drip", "color": "#87CEFA"},
 			{"value": 5, "label": "Paper-Filer Drip", "color": "#FFA500"},
@@ -17,8 +17,8 @@
 			{"value": 5, "label": "Chemex", "color": "#F0E68C"}
 			];
 			
-			var w = 575;
-			var h = 300;
+			var w = 960;
+			var h = 500;
 			var svg = d3.select("body")
 			                .append("svg")
 			                .attr("width", w)
@@ -30,11 +30,11 @@
     			.append("circle")
     		
     		circles.attr("cx", function(d , i){
-    		    return (i * 50) + 100;
+    		    return (i * 100) + 125;
     		})
         		.attr("cy", h/2)
         		.attr("r", function(d) {
-        		    return d["value"] * 5;
+        		    return d["value"] * 10;
         		})
         		.attr("fill", function(d){
         		    return d["color"];
@@ -42,11 +42,12 @@
         		.attr("stroke", function(d){
         		    return d["color"];
         		})
-        		.attr("stroke-width", 3)
+        		.attr("stroke-width", 6)
         		.attr("fill-opacity", 0.75);
     		
+    		//Give our Turkish Coffee a dashed line
     		d3.select(circles[0][0])
-    		    .attr("stroke-dasharray", "4,2")
+    		    .attr("stroke-dasharray", "12,4")
         		.attr("fill-opacity", 0.0);
         	
         	function makeMarker (inElement, inID, orientAngle) {
@@ -83,22 +84,37 @@
         	    return d["label"];
         	})
         	    .attr("x", function(d , i){
-                    return (i * 50) + 100;
+                    return (i * 100) + 125;
                 })
                 .attr("y", function(d, i) {
                     // Stagger label placement above and below circles.
                     if (i % 2 == 0) {
                         // Example: 300 - (4 * 5) - 165 = 115
-                        return  h - (d["value"] * 5) - 165;
+                        return  h - (d["value"] * 10) - 265;
                     } else {
-                        return d["value"] * 5 + 175
+                        return d["value"] * 10 + 275
                     }
                 })
                 .attr("text-anchor", "middle")
                 .attr("font-family", "sans-serif")
-                .attr("font-size", "11px")
+                .attr("font-size", "12px")
                 .attr("fill", "#000000");
-        		
+             
+            function makeAxisLabels(inElement, inText, inAnchor, inX, inY) {
+	           inElement.append("text")
+	              .text(inText)
+	              .attr("x", inX)
+	              .attr("y", inY)
+	              .attr("text-anchor", inAnchor)
+                  .attr("font-family", "sans-serif")
+                  .attr("font-size", "16px")
+                  .attr("fill", "#000000");
+            }
+            
+            makeAxisLabels(svg, "Least Flavor Clarity", "start", 50, 435);
+            makeAxisLabels(svg, "Most Body", "start", 50, 455);
+            makeAxisLabels(svg, "Most Flavor Clarity", "end", w-50, 435);
+            makeAxisLabels(svg, "Least Body", "end", w-50, 455);
 		</script>
 		<!--
 		<p>Some SVG Circles About Coffee Brew Methods.</p>
