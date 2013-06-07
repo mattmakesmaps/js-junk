@@ -2,27 +2,10 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-
-		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
-		Remove this if you use the .htaccess -->
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-
-		<title>test_circles</title>
-		<meta name="description" content="" />
-		<meta name="author" content="Matthew Kenny" />
-
-		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
-
-		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-		<link rel="shortcut icon" href="/favicon.ico" />
-		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<script type="text/javascript" src="../d3/d3.js"></script>
-		
 	</head>
-
 	<body>
 		<script type="text/javascript">
-			// To be replaced with values from Scott Rao figure 4?
 			var dataset = [
 			{"value": 4, "label": "Turkish", "color": "#000000"},
 			{"value": 6, "label": "French Press", "color": "#D8BFD8"},
@@ -66,37 +49,20 @@
     		    .attr("stroke-dasharray", "4,2")
         		.attr("fill-opacity", 0.0);
         	
+        	function makeMarker (inElement, inID, orientAngle) {
+            	inElement.append("defs").append("marker")
+                    .attr("id", inID)
+                    .attr("refX", 6) 
+                    .attr("refY", 3)
+                    .attr("markerWidth", 25)
+                    .attr("markerHeight", 35)
+                    .attr("orient", orientAngle)
+                    .append("path")
+                         .attr("d", "M 0,0 V 6 L8,3 Z");
+        	};
         	
-        	// How do I make a re-usable marker definition
-        	// that can be subclassed and modified?
-        	var marker_end = svg.append("marker")
-                .attr("id", "arrow_end")
-                .attr("refX", 12)
-                .attr("refY", 6)
-                .attr("markerWidth", 25)
-                .attr("markerHeight", 35)
-                .attr("orient", "auto")
-                .append("path")
-                     .attr("d", "M 0,0 V 12 L16,6 Z");
-            
-            var marker_start = marker_end.attr("id", "arrow_start");
-            
-            svg.append("defs").append("marker_end")
-            
-            svg.append("defs").append("marker_start")
-        	
-        	/**
-        	svg.append("defs").append("marker")
-                .attr("id", "my_arrowhead")
-                .attr("refX", 12) 
-                .attr("refY", 6)
-                .attr("markerWidth", 25)
-                .attr("markerHeight", 35)
-                .attr("orient", "auto")
-                .append("path")
-                     .attr("d", "M 0,0 V 12 L16,6 Z");
-             **/
-        	
+        	makeMarker(svg, "arrow_start", 180);
+        	makeMarker(svg, "arrow_end", "auto");
         	
             var centerline = svg.append("line")
                 .attr("x1", 50)
@@ -105,13 +71,41 @@
         	    .attr("y2", h/2)
         	    .attr("marker-end", "url(#arrow_end)")
         	    .attr("marker-start", "url(#arrow_start)")
-        	    .style("stroke", "#000000");
+        	    .style("stroke", "black")
+        	    .style("stroke-width", 2);
+        	    
+        	var labels = svg.selectAll("text")
+        	                 .data(dataset)
+        	                 .enter()
+        	                 .append("text")
+        	
+        	labels.text(function(d) {
+        	    return d["label"];
+        	})
+        	    .attr("x", function(d , i){
+                    return (i * 50) + 100;
+                })
+                .attr("y", function(d, i) {
+                    // Stagger label placement above and below circles.
+                    if (i % 2 == 0) {
+                        // Example: 300 - (4 * 5) - 165 = 115
+                        return  h - (d["value"] * 5) - 165;
+                    } else {
+                        return d["value"] * 5 + 175
+                    }
+                })
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "11px")
+                .attr("fill", "#000000");
         		
 		</script>
+		<!--
 		<p>Some SVG Circles About Coffee Brew Methods.</p>
 		<p>Larger circles indicate a greater range in filter porosity.</p>
 		<a href="http://i.imgur.com/07elh8S.jpg">Based On</a>
 		<a href="http://www.reddit.com/r/Coffee/comments/1ekzis/the_spectrum_of_flavor_clarity_vs_body_a_really/">Via</a>
 		<a href="http://www.amazon.com/Everything-But-Espresso-Professional-Techniques/dp/B003LM063A">Ripped Off From</a>
+		-->
 	</body>
 </html>
