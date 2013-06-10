@@ -14,50 +14,60 @@
 			{"value": 5, "label": "Cloth-Filter Drip", "color": "#87CEFA"},
 			{"value": 5, "label": "Paper-Filer Drip", "color": "#FFA500"},
 			{"value": 8, "label": "Siphon", "color": "#90EE90"},
-			{"value": 5, "label": "Chemex", "color": "#F0E68C"}
+			{"value": 5, "label": "Chemex", "color": "#F0E68C"},
 			];
 			
 			var w = 960;
 			var h = 500;
+			var padding = w * 0.10 //padding is 10% the width.
+			
 			var svg = d3.select("body")
 			                .append("svg")
-			                .attr("width", w)
-			                .attr("height", h);
+			                .attr({
+			                	"width": w,
+			                	"height": h
+			                });
 			
 			var circles = svg.selectAll("circle")
     			.data(dataset)
     			.enter()
     			.append("circle")
+    			
+    		var xScale = d3.scale.linear()
+    		                 // Need to call max domain value to length-1 since we're
+    		                 // using the scale on the index, not the data value.
+    		                 // e.g. circles[0][7]. 7 is a pointer to the 8th element in the array.
+    		                 .domain([0, (dataset.length - 1)])
+    		                 .range([padding, w-padding])
     		
-    		circles.attr("cx", function(d , i){
-    		    return (i * 100) + 125;
-    		})
-        		.attr("cy", h/2)
-        		.attr("r", function(d) {
-        		    return d["value"] * 10;
-        		})
-        		.attr("fill", function(d){
-        		    return d["color"];
-        		})
-        		.attr("stroke", function(d){
-        		    return d["color"];
-        		})
-        		.attr("stroke-width", 6)
-        		.attr("fill-opacity", 0.75);
+    		circles.attr({
+    			"cx": function(d , i){ return xScale(i); },
+    			"cy": h/2,
+    			// radius is scaled in relation to 1.2% of SVG Width
+        		"r": function(d) { return d["value"] * (w * 0.012); }, 
+        		"fill": function(d){ return d["color"]; },
+        		"stroke": function(d){ return d["color"]; },
+        		"stroke-width": 6,
+        		"fill-opacity": 0.75
+    		});
     		
     		//Give our Turkish Coffee a dashed line
     		d3.select(circles[0][0])
-    		    .attr("stroke-dasharray", "12,4")
-        		.attr("fill-opacity", 0.0);
+    		    .attr({
+    		    	"stroke-dasharray": "12,4",
+    		    	"fill-opacity": 0.0
+    		    	})
         	
         	function makeMarker (inElement, inID, orientAngle) {
             	inElement.append("defs").append("marker")
-                    .attr("id", inID)
-                    .attr("refX", 6) 
-                    .attr("refY", 3)
-                    .attr("markerWidth", 25)
-                    .attr("markerHeight", 35)
-                    .attr("orient", orientAngle)
+                    .attr({
+                    	"id": inID,
+                    	"refX": 6,
+                    	"refY": 3,
+                    	"markerWidth": 25,
+                    	"markerHeight": 35,
+                    	"orient": orientAngle
+                    	})
                     .append("path")
                          .attr("d", "M 0,0 V 6 L8,3 Z");
         	};
@@ -66,12 +76,14 @@
         	makeMarker(svg, "arrow_end", "auto");
         	
             var centerline = svg.append("line")
-                .attr("x1", 50)
-        	    .attr("x2", w-50)
-        	    .attr("y1", h/2)
-        	    .attr("y2", h/2)
-        	    .attr("marker-end", "url(#arrow_end)")
-        	    .attr("marker-start", "url(#arrow_start)")
+                .attr({
+                	"x1": padding * 0.1,
+                	"x2": w-(padding * 0.1),
+                	"y1": h/2,
+                	"y2": h/2,
+                	"marker-end": "url(#arrow_end)",
+                	"marker-start": "url(#arrow_start)"
+                	})
         	    .style("stroke", "black")
         	    .style("stroke-width", 2);
         	    
@@ -84,15 +96,15 @@
         	    return d["label"];
         	})
         	    .attr("x", function(d , i){
-                    return (i * 100) + 125;
+                    return xScale(i) ;
                 })
                 .attr("y", function(d, i) {
                     // Stagger label placement above and below circles.
                     if (i % 2 == 0) {
                         // Example: 300 - (4 * 5) - 165 = 115
-                        return  h - (d["value"] * 10) - 265;
+                        return  h - (d["value"] * (w * 0.012)) - (h * 0.53);
                     } else {
-                        return d["value"] * 10 + 275
+                        return d["value"] * (w * 0.012) + (h * 0.54) 
                     }
                 })
                 .attr("text-anchor", "middle")
@@ -116,12 +128,5 @@
             makeAxisLabels(svg, "Most Flavor Clarity", "end", w-50, 435);
             makeAxisLabels(svg, "Least Body", "end", w-50, 455);
 		</script>
-		<!--
-		<p>Some SVG Circles About Coffee Brew Methods.</p>
-		<p>Larger circles indicate a greater range in filter porosity.</p>
-		<a href="http://i.imgur.com/07elh8S.jpg">Based On</a>
-		<a href="http://www.reddit.com/r/Coffee/comments/1ekzis/the_spectrum_of_flavor_clarity_vs_body_a_really/">Via</a>
-		<a href="http://www.amazon.com/Everything-But-Espresso-Professional-Techniques/dp/B003LM063A">Ripped Off From</a>
-		-->
 	</body>
 </html>
