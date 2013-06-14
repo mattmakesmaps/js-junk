@@ -31,14 +31,26 @@
 			var circles = svg.selectAll("circle")
     			.data(dataset)
     			.enter()
-    			.append("circle")
-    			
+    			.append("circle");
+    		
+    		/***
+    		// Using a linear scale works, but our dataset is ordinal.
+    		// I think that an ordinal scale is more appropriate.
     		var xScale = d3.scale.linear()
     		                 // Need to call max domain value to length-1 since we're
     		                 // using the scale on the index, not the data value.
     		                 // e.g. circles[0][7]. 7 is a pointer to the 8th element in the array.
     		                 .domain([0, (dataset.length - 1)])
     		                 .range([padding, w-padding])
+    		***/
+    		
+    		// Create an array from the indexes of our dataset                
+    		var domain = d3.range(dataset.length);
+    		
+    		// Our data are ordinal, so lets use an ordinal scale.
+    		var xScale = d3.scale.ordinal()
+    		                 .domain(domain, padding)
+    		                 .rangePoints([padding, w-padding]);
     		
     		circles.attr({
     			"cx": function(d , i){ return xScale(i); },
